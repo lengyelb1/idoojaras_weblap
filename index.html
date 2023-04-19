@@ -97,12 +97,12 @@
         var ki = "";
         var ido = d.dt_txt;
             
-        ki =  `<div class="forecast-item">
-        <div id="description2">${desc}</div>
-            <h1 id="temp2">${temp}</h1>
-            <div id="location2">${ido}</div>
-            <p id="wind2">${svgNyil}${wind} m/s</p>
-            <p id="pascale2">${svgPascal}${d.main.pressure} hPa</p>
+        ki =`<div class="forecast-item">
+            <div class="description">${desc}</div>
+            <h1 class="temp">${temp}</h1>
+            <div class="time">${ido}</div>
+            <p class="wind">${svgNyil}${wind} m/s</p>
+            <p class="pascale">${svgPascal}${d.main.pressure} hPa</p>
         </div>`;
                 
         
@@ -198,12 +198,12 @@
             }
             */
             
-            ki =`<div class="mid">
-                    <div id="description2" style ="color:#40ffc1" ;>${desc}</div>
-                    <h1  style ="color:#40ffc1" id="temp2">${temp}</h1>
-                    <div style ="color:#40ffc1" id="location2">${d.name}</div>
-                    <p   style ="color:#40ffc1" id="wind2">${svgNyil}${wind} m/s</p>
-                    <p   style ="color:#40ffc1" id="pascale2">${svgPascal}${d.main.pressure} hPa</p>
+            ki =`<div style ="color:#EDF1D6" class="mid">
+                    <div  class="location">${d.name}</div>
+                    <div class="description"  ;>${desc}</div>
+                    <h2 class="temp">${temp}</h2>
+                    <p  class="wind">${svgNyil}${wind} m/s</p>
+                    <p  class="pascale">${svgPascal}${d.main.pressure} hPa</p>
                 </div>`;
 
             console.log("Lefut a draw fő");
@@ -213,11 +213,11 @@
             console.log("Lefut a draw");
 
             ki =  `<div class="mid">
-            <div id="description2">${desc}</div>
-                <h1 id="temp2">${temp}</h1>
-                <div id="location2">${d.name}</div>
-                <p id="wind2">${svgNyil}${wind} m/s</p>
-                <p id="pascale2">${svgPascal}${d.main.pressure} hPa</p>
+                <div class="location">${d.name}</div>
+                <div class="description">${desc}</div>
+                <h2 class = "temp">${temp}</h2>
+                <p class="wind">${svgNyil}${wind} m/s</p>
+                <p class="pascale">${svgPascal}${d.main.pressure} hPa</p>
             </div>`;
         }
         //var ki = '<div class="mid"> <div id="description2">'+desc+'</div> <h1 id="temp2">'+temp+'</h1> <div id="location2">'+nev+'</div> <p id="wind2">'+svgNyil+wind+' m/s</p> <p id="pascale2">'+svgPascal+d.main.pressure+' hPa</p> </div>';
@@ -439,11 +439,26 @@
     */
     body{
         background-image: url("https://cdn.wallpapersafari.com/83/73/a3yzKm.jpg");
+        font-family: 'Montserrat', sans-serif;
+        text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
+        color: #fff;
+    }
+
+    header{
+        background-color: #4a61535b;
+        padding: 15px;
+        border-radius: 3px;
+        width: 120px;
+        height: 35px;
+    }
+
+    header h1 {
+        margin: 0px;
     }
 
     .center{
         display:table;
-        background-color: #a4bc92;
+        background-color: #4a61535b;
         padding: 15px;
         border-radius: 3px;
         width: 70%;
@@ -455,7 +470,7 @@
     .box-left{
         border-radius: 3px;
         display: flex;
-        background-color: #609966be;
+        background-color: #417a46be;
         width: 40%;
         float: left;
         padding: 15px;
@@ -465,7 +480,7 @@
     .box-right{
         border-radius: 3px;
         display: flex;
-        background-color: #609966be;
+        background-color: #427961be;
         width: 40%;
         float: right;
         padding: 15px;
@@ -485,13 +500,35 @@
         width: 100%;
     }
 
+    #forecast h2{
+        background-color: #79d9aed1;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100px;
+    }
+
     .forecast-item{
         display: grid;
         padding: 15px;
         gap: 10px 10px;
-        background-color: #00ff8cd1;
+        background-color: #79d9aed1;
         border-radius: 15px;
         margin-top: 25px;
+    }
+
+    .mid{
+        background-color: #53a946d1;
+        border-radius: 3px;
+        padding: 10px;
+        margin: 15px;
+    }
+
+    .time{
+        background-color: #c8ffe6d1;
+        color: #0f422bd1;
+        font-weight: bolder;
+        border-radius: 3px;
+        padding: 10px;
     }
 
     /* width */
