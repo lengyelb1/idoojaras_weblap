@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,900" rel="stylesheet"> 
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.js"></script>
+    
+</head>
+<script>
+    const key = 'cde2a702b969bafc31a402bd43bd735e';
+    
+    if(key=='') document.getElementById('idojaras_fix').innerHTML = ('Remember to add your api key from openweathermap.org/api');
+    
+    function forecast(cityID, hova) {
+      fetch('https://api.openweathermap.org/data/2.5/weather?id=' + cityID + '&appid=' + key)
+        .then(function(resp) {console.log(resp); return resp.json() }) // Convert data to json
+        .then(function(data) {
+            console.log("Forecast 1");
+            console.log("Data: "+data)
+            fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${data.coord.lat}&lon=${data.coord.lon}&appid=${key}`)
+                .then(function(resp) { return resp.json() }) // Convert data to json
+                .then(function(forecastData) {
+                  console.log("Forecast 2");
+
+                  console.log("Forecast data: ")
+                  console.log(forecastData)
+                  forecastListDraw(forecastData,"forecast",data.name)
+                })
+                .catch(function() {
+                  // catch any errors
+                });
+            })
+        .catch(function() {
+          // catch any errors
+        });
+    }
+
+    function forecastListDraw(d,hova,cityName){
+        console.log("Forecast list")
+        var ki = "";
+        ki += `<h2>${cityName}</h2>`;
+        var index = 0;
+        try {
+            for (let i = 0; i < d.list.length; i++) {
+            
+            
+                ki += forecastDraw(d.list[i],hova);
+                index = index +1;               
+            }    
+        } catch (error) {
+            console.log(error)
+        }
+        
+        ki += `</div>`;
+
+        document.getElementById(hova).innerHTML = ki;
+
+        /*
+        d.list.forEach(element => {
+            //console.log(element)
+            forecastDraw(element,hova)
+        });    
+        */
+        
+    }
+    
+    function forecastDraw(d,hova){
+        var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+    	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+        var description = d.weather[0].description; 
+        var wind = d.wind.speed; 
+        var url = `https://openweathermap.org/weathermap?basemap=map&cities=true&layer=temperature&lat=48.4256&lon=20.4552&zoom=10`;
+
+        var svgPascal = `<svg data-v-7bdd0738="" data-v-3208ab85="" width="27px" height="27px" viewBox="0 0 96 96" class="icon-pressure" ><g data-v-7bdd0738="" transform="translate(0,96) scale(0.100000,-0.100000)" fill="#48484a" stroke="none"><path data-v-7bdd0738="" d="M351 854 c-98 -35 -179 -108 -227 -202 -27 -53 -29 -65 -29 -172 0-107 2 -119 29 -172 38 -75 104 -141 180 -181 58 -31 66 -32 176 -32 110 0 118 1 175 32 77 40 138 101 178 178 31 57 32 65 32 175 0 110 -1 118 -32 176 -40 76 -106 142 -181 179 -49 25 -71 29 -157 32 -73 2 -112 -1 -144 -13z m259 -80 c73 -34 126 -86 161 -159 24 -50 29 -73 29 -135 0 -62 -5 -85 -29 -135 -57 -119 -161 -185 -291 -185 -130 0 -234 66 -291 185 -24 50 -29 73 -29 135 0 130 66 234 185 291 82 40 184 41 265 3z"></path><path data-v-7bdd0738="" d="M545 600 c-35 -35 -68 -60 -80 -60 -27 0 -45 -18 -45 -45 0 -33 -50 -75 -89 -75 -18 0 -41 -5 -53 -11 -20 -11 -20 -11 3 -35 12 -13 33 -24 46 -24 17 0 23 -6 23 -23 0 -13 10 -33 23 -45 30 -28 47 -13 47 43 0 32 6 47 28 68 15 15 37 27 48 27 26 0 44 18 44 44 0 12 26 47 60 81 l60 61 -28 27 -28 27 -59 -60z"></path></g></svg>`;
+        var desc = "";
+
+        if (description == "overcast clouds") {
+            desc= "Felhős";            
+        }else if (description == "clear sky") {
+            desc = "Tiszta";            
+        }
+        else{
+            desc = description;            
+        }
+
+        var svgNyil =`<svg  data-v-47880d39="" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve" class="icon-wind-direction" style="width:20px; transform: rotate(${d.wind.deg}deg);"><g data-v-47880d39="" fill="#48484a"><path data-v-47880d39="" d="M510.5,749.6c-14.9-9.9-38.1-9.9-53.1,1.7l-262,207.3c-14.9,11.6-21.6,6.6-14.9-11.6L474,48.1c5-16.6,14.9-18.2,21.6,0l325,898.7c6.6,16.6-1.7,23.2-14.9,11.6L510.5,749.6z"></path><path data-v-47880d39="" d="M817.2,990c-8.3,0-16.6-3.3-26.5-9.9L497.2,769.5c-5-3.3-18.2-3.3-23.2,0L210.3,976.7c-19.9,16.6-41.5,14.9-51.4,0c-6.6-9.9-8.3-21.6-3.3-38.1L449.1,39.8C459,13.3,477.3,10,483.9,10c6.6,0,24.9,3.3,34.8,29.8l325,898.7c5,14.9,5,28.2-1.7,38.1C837.1,985,827.2,990,817.2,990z M485.6,716.4c14.9,0,28.2,5,39.8,11.6l255.4,182.4L485.6,92.9l-267,814.2l223.9-177.4C454.1,721.4,469,716.4,485.6,716.4z"></path></g></svg>` ;
+        var temp = celcius + '&deg;';
+
+        //console.log("Lefut a forecastDraw");
+        
+        var nev = d.name;
+        var ki = "";
+        var ido = d.dt_txt;
+            
+        ki =  `<div class="forecast-item">
+        <div id="description2">${desc}</div>
+            <h1 id="temp2">${temp}</h1>
+            <div id="location2">${ido}</div>
+            <p id="wind2">${svgNyil}${wind} m/s</p>
+            <p id="pascale2">${svgPascal}${d.main.pressure} hPa</p>
+        </div>`;
+                
+        
+        
+        //console.log(ki);
+        //document.getElementById(hova).innerHTML += ki;
+        //console.log("ForecastDraw vége ")
+        return ki;
+    }
+
+    
+    function weatherBallon(main, cityID, hova) {
+    	fetch('https://api.openweathermap.org/data/2.5/weather?id=' + cityID+ '&appid=' + key)  
+    	.then(function(resp) { return resp.json() }) // Convert data to json
+    	.then(function(data) {
+        
+        console.log(data);
+    		drawWeather(main,data,hova);
+        })
+    	.catch(function() {
+    		// catch any errors
+    	});
+
+        
+
+    }
+
+    function mapShow(data){
+        console.log(`https://tile.openweathermap.org/map/${"clouds_new"}/${20}/${Number(data.coord.lat)}/${Number(data.coord.lon)}.png?appid=${key}`);
+        fetch(`https://tile.openweathermap.org/map/${"clouds_new"}/${20}/${data.coord.lat}/${data.coord.lon}.png?appid=${key}`)  
+    	.then(function(resp) { return resp.json() }) // Convert data to json
+    	.then(function(mapData) {
+        
+        const map = (window.map = new mapboxgl.Map({
+            container: 'map',                           // 'map' is the id of the HTML div
+            style: 'mapbox://styles/mapbox/light-v10'
+        }));
+        console.log(mapData);
+        })
+    	.catch(function() {
+    		// catch any errors
+    	});
+    }
+
+    function mapLayerChoice(){
+        var zoom =10;
+        var layer = document.getElementById("mapLayers").value;
+        document.getElementById().innerHTML = `https://tile.openweathermap.org/map/${layer}/${zoom}/${dataToMap.coord.lat}/${dataToMap.coord.lon}.png?appid=${key}`;
+    }
+
+    function drawWeather(main, d ,hova) {
+
+        var celcius = Math.round(parseFloat(d.main.temp)-273.15);
+    	var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
+        var description = d.weather[0].description; 
+        var wind = d.wind.speed; 
+        var url = `https://openweathermap.org/weathermap?basemap=map&cities=true&layer=temperature&lat=48.4256&lon=20.4552&zoom=10`;
+
+        var svgPascal = `<svg data-v-7bdd0738="" data-v-3208ab85="" width="27px" height="27px" viewBox="0 0 96 96" class="icon-pressure" ><g data-v-7bdd0738="" transform="translate(0,96) scale(0.100000,-0.100000)" fill="#48484a" stroke="none"><path data-v-7bdd0738="" d="M351 854 c-98 -35 -179 -108 -227 -202 -27 -53 -29 -65 -29 -172 0-107 2 -119 29 -172 38 -75 104 -141 180 -181 58 -31 66 -32 176 -32 110 0 118 1 175 32 77 40 138 101 178 178 31 57 32 65 32 175 0 110 -1 118 -32 176 -40 76 -106 142 -181 179 -49 25 -71 29 -157 32 -73 2 -112 -1 -144 -13z m259 -80 c73 -34 126 -86 161 -159 24 -50 29 -73 29 -135 0 -62 -5 -85 -29 -135 -57 -119 -161 -185 -291 -185 -130 0 -234 66 -291 185 -24 50 -29 73 -29 135 0 130 66 234 185 291 82 40 184 41 265 3z"></path><path data-v-7bdd0738="" d="M545 600 c-35 -35 -68 -60 -80 -60 -27 0 -45 -18 -45 -45 0 -33 -50 -75 -89 -75 -18 0 -41 -5 -53 -11 -20 -11 -20 -11 3 -35 12 -13 33 -24 46 -24 17 0 23 -6 23 -23 0 -13 10 -33 23 -45 30 -28 47 -13 47 43 0 32 6 47 28 68 15 15 37 27 48 27 26 0 44 18 44 44 0 12 26 47 60 81 l60 61 -28 27 -28 27 -59 -60z"></path></g></svg>`;
+        var desc = "";
+
+        if (description == "overcast clouds") {
+            desc= "Felhős";            
+        }else if (description == "clear sky") {
+            desc = "Tiszta";            
+        }
+        else{
+            desc = description;            
+        }
+
+        var svgNyil =`<svg  data-v-47880d39="" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve" class="icon-wind-direction" style="width:20px; transform: rotate(${d.wind.deg}deg);"><g data-v-47880d39="" fill="#48484a"><path data-v-47880d39="" d="M510.5,749.6c-14.9-9.9-38.1-9.9-53.1,1.7l-262,207.3c-14.9,11.6-21.6,6.6-14.9-11.6L474,48.1c5-16.6,14.9-18.2,21.6,0l325,898.7c6.6,16.6-1.7,23.2-14.9,11.6L510.5,749.6z"></path><path data-v-47880d39="" d="M817.2,990c-8.3,0-16.6-3.3-26.5-9.9L497.2,769.5c-5-3.3-18.2-3.3-23.2,0L210.3,976.7c-19.9,16.6-41.5,14.9-51.4,0c-6.6-9.9-8.3-21.6-3.3-38.1L449.1,39.8C459,13.3,477.3,10,483.9,10c6.6,0,24.9,3.3,34.8,29.8l325,898.7c5,14.9,5,28.2-1.7,38.1C837.1,985,827.2,990,817.2,990z M485.6,716.4c14.9,0,28.2,5,39.8,11.6l255.4,182.4L485.6,92.9l-267,814.2l223.9-177.4C454.1,721.4,469,716.4,485.6,716.4z"></path></g></svg>` ;
+        var temp = celcius + '&deg;';
+
+        console.log("Lefut a draw");
+        
+        var nev = d.name;
+        var ki = "";
+        if (main) {
+            
+            //document.getElementById(descriptionId).style.color = "#40ffc1";
+            //document.getElementById(tempId).style.color = "#40ffc1";
+            //document.getElementById(locationId).style.color = "#40ffc1";
+
+            /*
+            if( description.indexOf('rain') > 0 ) {
+        	document.body.className = 'rainy';
+            } else if( description.indexOf('cloud') > 0 ) {
+            	document.body.className = 'cloudy';
+            } else if( description.indexOf('sunny') > 0 ) {
+            	document.body.className = 'sunny';
+            } else {
+            	document.body.className = 'clear';
+            }
+            */
+            
+            ki =`<div class="mid">
+                    <div id="description2" style ="color:#40ffc1" ;>${desc}</div>
+                    <h1  style ="color:#40ffc1" id="temp2">${temp}</h1>
+                    <div style ="color:#40ffc1" id="location2">${d.name}</div>
+                    <p   style ="color:#40ffc1" id="wind2">${svgNyil}${wind} m/s</p>
+                    <p   style ="color:#40ffc1" id="pascale2">${svgPascal}${d.main.pressure} hPa</p>
+                </div>`;
+
+            console.log("Lefut a draw fő");
+
+        }
+        else{
+            console.log("Lefut a draw");
+
+            ki =  `<div class="mid">
+            <div id="description2">${desc}</div>
+                <h1 id="temp2">${temp}</h1>
+                <div id="location2">${d.name}</div>
+                <p id="wind2">${svgNyil}${wind} m/s</p>
+                <p id="pascale2">${svgPascal}${d.main.pressure} hPa</p>
+            </div>`;
+        }
+        //var ki = '<div class="mid"> <div id="description2">'+desc+'</div> <h1 id="temp2">'+temp+'</h1> <div id="location2">'+nev+'</div> <p id="wind2">'+svgNyil+wind+' m/s</p> <p id="pascale2">'+svgPascal+d.main.pressure+' hPa</p> </div>';
+
+        console.log("vége előtt")
+        //console.log(ki);
+        document.getElementById(hova).innerHTML += ki;
+
+        
+        /*
+        if (main) {
+            
+            document.getElementById(descriptionId).style.color = "#40ffc1";
+            document.getElementById(tempId).style.color = "#40ffc1";
+            document.getElementById(locationId).style.color = "#40ffc1";
+
+            
+            if( description.indexOf('rain') > 0 ) {
+        	document.body.className = 'rainy';
+            } else if( description.indexOf('cloud') > 0 ) {
+            	document.body.className = 'cloudy';
+            } else if( description.indexOf('sunny') > 0 ) {
+            	document.body.className = 'sunny';
+            } else {
+            	document.body.className = 'clear';
+            }
+            
+            ki = `<div class="mid">
+            <div id="description2" style = " color:'#40ffc1';">${desc}</div>
+                <h1 id="temp2">${temp}</h1>
+                <div id="location2">${d.name}</div>
+                <p id="wind2">${wind}</p>
+                <p id="pascale2">${pascaleId}</p>
+            </div>`;
+
+            console.log("Lefut a draw fő");
+
+        }
+        else{
+            console.log("Lefut a draw");
+
+            ki =  `<div class="mid">
+            <div id="description2">${desc}</div>
+                <h1 id="temp2">${temp}</h1>
+                <div id="location2">${d.name}</div>
+                <p id="wind2">${svgNyil}${wind} m/s</p>
+                <p id="pascale2">${svgPascal}${pascaleId} hPa</p>
+            </div>`;
+        }*/
+        //document.getElementById(windId).innerHTML = svgNyil+" "+wind+" m/s";
+        //document.getElementById(pascaleId).innerHTML = svgPascal +" "+d.main.pressure+" hPa";
+
+
+
+        
+    }
+
+    window.onload = function() {
+    	weatherBallon(false, 3054638,"idojaras_fix");
+    	weatherBallon(true, 717582,"idojaras_fix");
+
+        forecast(717582,"forecast");
+
+    	//weatherBallon(false, 3054638,"table");
+    }
+    
+    //https://bithacker.dev/fetch-weather-openweathermap-api-javascript
+    //https://www.xutil.dev/sandbox/dqGG7W-T6
+
+    //Kereső
+    
+    function kereses(){
+        const key = 'cde2a702b969bafc31a402bd43bd735e';
+        fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${document.getElementById("bekeres").value}&appid=${key}`)  
+    	.then(function(resp) { return resp.json() }) // Convert data to json
+    	.then(function(data) {
+            var celcius = Math.round(parseFloat(data.main.temp)-273.15);
+    	    var fahrenheit = Math.round(((parseFloat(data.main.temp)-273.15)*1.8)+32);
+            var description = data.weather[0].description; 
+            var wind = data.wind.speed; 
+            
+            var svgPascal = `<svg data-v-7bdd0738="" data-v-3208ab85="" width="27px" height="27px" viewBox="0 0 96 96" class="icon-pressure" ><g data-v-7bdd0738="" transform="translate(0,96) scale(0.100000,-0.100000)" fill="#48484a" stroke="none"><path data-v-7bdd0738="" d="M351 854 c-98 -35 -179 -108 -227 -202 -27 -53 -29 -65 -29 -172 0-107 2 -119 29 -172 38 -75 104 -141 180 -181 58 -31 66 -32 176 -32 110 0 118 1 175 32 77 40 138 101 178 178 31 57 32 65 32 175 0 110 -1 118 -32 176 -40 76 -106 142 -181 179 -49 25 -71 29 -157 32 -73 2 -112 -1 -144 -13z m259 -80 c73 -34 126 -86 161 -159 24 -50 29 -73 29 -135 0 -62 -5 -85 -29 -135 -57 -119 -161 -185 -291 -185 -130 0 -234 66 -291 185 -24 50 -29 73 -29 135 0 130 66 234 185 291 82 40 184 41 265 3z"></path><path data-v-7bdd0738="" d="M545 600 c-35 -35 -68 -60 -80 -60 -27 0 -45 -18 -45 -45 0 -33 -50 -75 -89 -75 -18 0 -41 -5 -53 -11 -20 -11 -20 -11 3 -35 12 -13 33 -24 46 -24 17 0 23 -6 23 -23 0 -13 10 -33 23 -45 30 -28 47 -13 47 43 0 32 6 47 28 68 15 15 37 27 48 27 26 0 44 18 44 44 0 12 26 47 60 81 l60 61 -28 27 -28 27 -59 -60z"></path></g></svg>`;
+            var desc = "";
+
+            if (description == "overcast clouds") {
+                desc= "Felhős";            
+            }else if (description == "clear sky") {
+                desc = "Tiszta";            
+            }
+            else{
+                desc = description;            
+            }
+
+            var svgNyil =`<svg  data-v-47880d39="" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve" class="icon-wind-direction" style="width:20px; transform: rotate(${data.wind.deg}deg);"><g data-v-47880d39="" fill="#48484a"><path data-v-47880d39="" d="M510.5,749.6c-14.9-9.9-38.1-9.9-53.1,1.7l-262,207.3c-14.9,11.6-21.6,6.6-14.9-11.6L474,48.1c5-16.6,14.9-18.2,21.6,0l325,898.7c6.6,16.6-1.7,23.2-14.9,11.6L510.5,749.6z"></path><path data-v-47880d39="" d="M817.2,990c-8.3,0-16.6-3.3-26.5-9.9L497.2,769.5c-5-3.3-18.2-3.3-23.2,0L210.3,976.7c-19.9,16.6-41.5,14.9-51.4,0c-6.6-9.9-8.3-21.6-3.3-38.1L449.1,39.8C459,13.3,477.3,10,483.9,10c6.6,0,24.9,3.3,34.8,29.8l325,898.7c5,14.9,5,28.2-1.7,38.1C837.1,985,827.2,990,817.2,990z M485.6,716.4c14.9,0,28.2,5,39.8,11.6l255.4,182.4L485.6,92.9l-267,814.2l223.9-177.4C454.1,721.4,469,716.4,485.6,716.4z"></path></g></svg>` ;
+            var temp = celcius + '&deg;';
+            
+            console.log("Kereses ki")
+            document.getElementById("keresett").innerHTML = `<div class="mid">
+            <div id="description2">${desc}</div>
+                <h1 id="temp2">${temp}</h1>
+                <div id="location2">${data.name}</div>
+                <p id="wind2">${svgNyil}${wind} m/s</p>
+                <p id="pascale2">${svgPascal}${data.main.pressure} hPa</p>
+            </div>`;
+        })
+    	.catch(function() {
+    		// catch any errors
+    	});
+
+        
+
+    }
+
+
+
+</script>
+
+
+<style>
+    /*
+    body {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
+    font-size: 1.3em;
+    height: 100vh;
+    background-image: linear-gradient(to right top, #99bbcb, #a5c7d7, #b1d4e2, #bde0ee, #c9edfa);
+    background-image: url("https://cdn.wallpapersafari.com/83/73/a3yzKm.jpg");
+    }
+
+    h1 {
+        margin: 0 auto;
+        font-size: 2.2em;
+        text-align: center;
+        color: #fff;
+        font-size: 3em;
+    }
+
+    #idojaras_fix{
+        display: inline-grid;
+        column-gap: 25px;
+        row-gap: 25px;
+        background-color: #778c96;
+        border-radius: 15px;
+        height: 100%;
+        float: left;
+        padding: 10px;
+    }
+
+    .mid{
+        display: block;
+        padding: 15px;
+        background-color: #63747c;
+        border-radius: 15px;
+        width: 200px;
+        height: 90%;
+        margin: 12px;
+    }
+
+    header{
+        top: 10px;
+        left: 10px;
+        display:block;
+        position:absolute;
+        padding: 25px;
+        background-color: #63747c;
+        border-radius: 15px;
+    }
+
+    #forecast{
+        width: 250px;
+        height: 470px;
+        display: flexbox;
+        float: right;
+        overflow:scroll;
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+    }
+    
+    #forecast h2{
+        background-color: #63747c;
+        width: 100%;
+        padding: 15px;
+        background-color: #63747c;
+        border-radius: 15px;
+    }
+
+    .forecast-item{
+        display: grid;
+        padding: 15px;
+        gap: 10px 10px;
+        background-color: #63747c;
+        border-radius: 15px;
+        margin-top: 25px;
+    }
+
+    .box{
+        width: 40%;
+        padding: 15px;
+    }
+
+    .center{
+        top: 50%;
+        height: 70%;
+        width: 70%;
+        overflow: hidden;
+        background-color: #ff0000;
+        border-radius: 3px;
+        padding: 25px;
+    }
+
+    body::-webkit-scrollbar {
+        display: none;
+    }
+    */
+    body{
+        background-image: url("https://cdn.wallpapersafari.com/83/73/a3yzKm.jpg");
+    }
+
+    .center{
+        display:table;
+        background-color: #a4bc92;
+        padding: 15px;
+        border-radius: 3px;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        height: 90%;
+    }
+
+    .box-left{
+        border-radius: 3px;
+        display: flex;
+        background-color: #609966be;
+        width: 40%;
+        float: left;
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .box-right{
+        border-radius: 3px;
+        display: flex;
+        background-color: #609966be;
+        width: 40%;
+        float: right;
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .idojaras_fix{
+        float: left;
+        padding: 15px;
+    }
+
+    #forecast{
+        padding: 15px;
+        overflow: scroll;
+        overflow-x: hidden;
+        height: 410px;
+        width: 100%;
+    }
+
+    .forecast-item{
+        display: grid;
+        padding: 15px;
+        gap: 10px 10px;
+        background-color: #00ff8cd1;
+        border-radius: 15px;
+        margin-top: 25px;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #00000096;
+      border-radius: 3px;
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 3px;
+    }
+    
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+</style>
+<body>
+    <header>
+        <h1>Időkép</h1>
+    </header>
+    
+    <div class="center">
+        
+        <div class="box-left">
+            <div id="idojaras_fix">
+       
+            </div>    
+        </div>   
+        
+        <div class="box-right">
+            <div id="forecast">
+
+            </div>    
+        </div>
+    </div>
+    <!--
+    <div class="weather-container">
+        <div id ="keresett">
+            
+        </div>
+        <br />
+        <input type="text" placeholder="Enter a location" id="bekeres">
+        <br />
+        <button id="search-btn" onclick="kereses()">Search</button>
+    </div>
+    -->
+</body>
+</html>
