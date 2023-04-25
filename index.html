@@ -100,11 +100,15 @@
         var ido = d.dt_txt;
             
         ki =`<div class="forecast-item">
-            <div class="description">${desc}</div>
-            <h1 class="temp">${temp}</h1>
+            <div class ="hofok"><img src="homero.png" alt="" class ="homero"> <h1 class="temp">${temp}</h1></div>
             <div class="time">${ido}</div>
-            <p class="wind">${svgNyil}${wind} m/s</p>
-            <p class="pascale">${svgPascal}${d.main.pressure} hPa</p>
+            <div class="description">${desc}</div>
+            <p class="wind">${svgNyil} ${wind} m/s</p>
+            <div class="eso">
+            <p>Eső valószínűsége</p>
+            <input type="range" name="" disabled min="0" max="100" value="${d.pop*100}" class="rain-range">
+            </div>
+            <p class="pascale">${svgPascal} ${d.main.pressure} hPa</p>
         </div>`;
                 
         
@@ -340,112 +344,15 @@
 
 
 <style>
-    /*
-    body {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 400;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
-    font-size: 1.3em;
-    height: 100vh;
-    background-image: linear-gradient(to right top, #99bbcb, #a5c7d7, #b1d4e2, #bde0ee, #c9edfa);
-    background-image: url("https://cdn.wallpapersafari.com/83/73/a3yzKm.jpg");
-    }
-
-    h1 {
-        margin: 0 auto;
-        font-size: 2.2em;
-        text-align: center;
-        color: #fff;
-        font-size: 3em;
-    }
-
-    #idojaras_fix{
-        display: inline-grid;
-        column-gap: 25px;
-        row-gap: 25px;
-        background-color: #778c96;
-        border-radius: 15px;
-        height: 100%;
-        float: left;
-        padding: 10px;
-    }
-
-    .mid{
-        display: block;
-        padding: 15px;
-        background-color: #63747c;
-        border-radius: 15px;
-        width: 200px;
-        height: 90%;
-        margin: 12px;
-    }
-
-    header{
-        top: 10px;
-        left: 10px;
-        display:block;
-        position:absolute;
-        padding: 25px;
-        background-color: #63747c;
-        border-radius: 15px;
-    }
-
-    #forecast{
-        width: 250px;
-        height: 470px;
-        display: flexbox;
-        float: right;
-        overflow:scroll;
-        scroll-behavior: smooth;
-        overflow-x: hidden;
-    }
     
-    #forecast h2{
-        background-color: #63747c;
-        width: 100%;
-        padding: 15px;
-        background-color: #63747c;
-        border-radius: 15px;
-    }
-
-    .forecast-item{
-        display: grid;
-        padding: 15px;
-        gap: 10px 10px;
-        background-color: #63747c;
-        border-radius: 15px;
-        margin-top: 25px;
-    }
-
-    .box{
-        width: 40%;
-        padding: 15px;
-    }
-
-    .center{
-        top: 50%;
-        height: 70%;
-        width: 70%;
-        overflow: hidden;
-        background-color: #ff0000;
-        border-radius: 3px;
-        padding: 25px;
-    }
-
-    body::-webkit-scrollbar {
-        display: none;
-    }
-    */
     body{
         background-image: url("https://cdn.wallpapersafari.com/83/73/a3yzKm.jpg");
         font-family: 'Montserrat', sans-serif;
         text-shadow: .1em .1em 0 rgba(0,0,0,0.3);
         color: #fff;
         margin: 0;
+        
+
     }
 
     header{
@@ -552,8 +459,8 @@
     }
 
     .time{
-        background-color: #c8ffe6d1;
-        color: #0f422bd1;
+        background-color: #ffffff69;
+        color: #fff;
         font-weight: bolder;
         border-radius: 3px;
         padding: 10px;
@@ -582,6 +489,96 @@
       background: #555;
     }
 
+    /* The slider itself */
+    
+    input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        background: transparent;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 10px;
+        background-image: linear-gradient(90deg,#ffffff,#006eff);
+        border-radius: 2px;
+    }
+
+    input[type=range]:focus::-webkit-slider-runnable-track {
+        background-image: linear-gradient(90deg,#ffffff,#006eff);
+    }
+
+    /*input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 3px;
+        background: #2C65FF;
+        background-image: url('water_drop.png');
+        background-size: 30px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        filter: saturate(200);
+        border-radius: 2px;
+    }
+    */
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 40px;
+        width: 40px;
+        /*background: #2C65FF;*/
+        background-image: url('water_drop.webp');
+        background-size: 40px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        filter: brightness(1.5);
+        margin-top: -18px;
+    }
+
+    input[type=range]::-moz-range-thumb {
+        height: 10px;
+        width: 10px;
+    }
+
+    input[type=range]:disabled {
+        /* Disabled Element */
+    }
+
+    input[type=range]:disabled::-webkit-slider-runnable-track {
+        /* Disabled slider-runnable-track */
+    }
+
+    input[type=range]:disabled::-moz-range-track {
+          /* Disabled slider-range-track */
+    }
+
+    input[type=range]:disabled::-webkit-slider-thumb {
+        /* Disabled slider-thumb */
+    }
+
+    input[type=range]:disabled::-moz-range-thumb {
+        /* Disabled slider-thumb */
+    }
+
+    .homero{
+        width: 60px;
+        height: 60px;
+    }
+
+    .temp{
+    }
+
+    .hofok{
+        display: flex;
+        align-items: center;        
+    }
+    
+    .eso{
+        background-color: #ffffff6b;
+        border-radius: 15px;
+        padding: 10px;
+        color: #fff;
+        font-weight:400;
+    }
+
 </style>
 <body>
     <header>
@@ -594,13 +591,17 @@
             <div id="idojaras_fix">
        
             </div>    
+
         </div>   
         
         <div class="box-right">
             <div id="forecast">
 
             </div>    
+
         </div>
+        
+
     </div>
     <div>
         <p></p>
@@ -610,6 +611,8 @@
             <h2>Made by Lengyel Bálint</h2>
         </div>
     </footer>
+    
+
     <!--
     <div class="weather-container">
         <div id ="keresett">
